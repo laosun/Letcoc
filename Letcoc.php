@@ -461,17 +461,14 @@ class L_Spider_silk extends Letcoc{
  * 
  * PHP Version 5.3.9
  * 
- * @name		_P Class
+ * @name   		_P Class
  * @package		CodeIgniter
- * @author		Aleksei Zhulitov
- * @title		Набор плюшек для разработчика кода.
+ * @author 		Aleksei Zhulitov
+ * @title  		Набор плюшек для разработчика кода.
  * 
- * @todo	Для получения справки по классу, выполните:
- * <pre>
- * 	_P::DOC();
- * </pre>
+ * @todo   		Для получения справки по классу, выполните: <code>_P::DOC();</code>
  * 
- * @example	[Образец класса для запуска примеров]
+ * @example		[Образец класса для запуска примеров]
  * <pre>
  *	class some{
  *		public $param	 = array();
@@ -493,16 +490,12 @@ class _P {
 	/**
 	 * Метод выводящий результат Функции `print_r` обрамленный в `pre`.
 	 * 
-	 * @example
-	 * <pre>
-	 * 	_P::P( $you_variable );
-	 * </pre>
+	 * @example	<code>_P::P( $you_variable );</code>
 	 * 
 	 * @access	public
-	 * @param	any		$var	[переменная информация о которой будет выведена]
-	 * @param	string|bool	$title
-	 * 					[string - Заголовок выходящий в начале контейнера с инфой;
-	 * 					 bool - `FALSE` не выводить заголовок ]
+	 * @param	any		$var	[Переменная, информация о которой будет выведена]
+	 * @param	string|bool	$title	[string - Заголовок выходящий в начале контейнера с инфой;
+	 *       	           	      	bool - `FALSE` не выводить заголовок ]
 	 * 
 	 * @param	bool		$var	[TRUE  - тэг `pre` будет позиционирован абсолютно]
 	 * @param	bool		$return	[TRUE  - вернет без `pre`; FALSE - выведет в браузер ]
@@ -529,10 +522,7 @@ class _P {
 	/**
 	 * Метод выводящий список методов переданного аргументом класса.
 	 * 
-	 * @example
-	 * <pre>
-	 * 	_P::CM( $class );
-	 * </pre>
+	 * @example	<code>_P::CM( $class );</code>
 	 * 
 	 * @access	public
 	 * @param	object	$class	[класс, методы которого нужно вывести.]
@@ -552,10 +542,7 @@ class _P {
 	 * Метод выводящий список параметров
 	 * переданного аргументом класса или объекта.
 	 * 
-	 * @example
-	 * <pre>
-	 * 	_P::CV( $class );
-	 * </pre>
+	 * @example	<code>_P::CV( $class );</code>
 	 * 
 	 * @access	public
 	 * @param	object	$class	[класс, параметры которого нужно вывести.]
@@ -578,10 +565,7 @@ class _P {
 	 * Выводит информацию только о тех параметрах,
 	 * значения которых не являются другими классами.
 	 *
-	 * @example
-	 * <pre>
-	 * 	_P::COV( $class );
-	 * </pre>
+	 * @example	<code>_P::COV( $class );</code>
 	 *
 	 * @access	public
 	 * @param	object	$class	[класс, параметры которого нужно вывести.]
@@ -609,10 +593,7 @@ class _P {
 	/**
 	 * Метод выводит информацию о всех определенных ранее константах.
 	 * 
-	 * @example
-	 * <pre>
-	 * 	_P::DC();
-	 * </pre>
+	 * @example	<code>_P::DC();</code>
 	 * 
 	 * @access	public
 	 * @return	void
@@ -630,10 +611,7 @@ class _P {
 	 * Метод выводит информацию о файлах которые ранее были подключены
 	 * через: include; include_once; require; require_once;
 	 * 
-	 * @example
-	 * <pre>
-	 * 	_P::_IF();
-	 * </pre>
+	 * @example	<code>_P::_IF();</code>
 	 * 
 	 * @access	public
 	 * @return	void
@@ -651,7 +629,7 @@ class _P {
 	/**
 	 * Метод выводит документацию по указанному классу.
 	 * 
-	 * @example_1 [Пример использования]
+	 * @example_1
 	 *	<pre>
 	 *		class some{
 	 *			/**
@@ -681,24 +659,32 @@ class _P {
 				if ( strlen( $DOC ) < 10 )
 					return "/**\r * Документация отсутствует ):\r */";
 			
-				$DOC	=	mb_ereg_replace(
-								"[\r\n]+\t+",
-								"\r",
-								$DOC
-							);
-
-				$DOC	=	mb_ereg_replace(
-								"[\r\n]+[\t *]+<",
-								"\r<",
-								$DOC
-							);
-							
-				$DOC	= str_replace(
-								"<pre>",
-								"<pre style='display:block;color:red;margin: 0 0 -15 0'>",
-								$DOC
-							);
-				$DOC	.= "<hr>\r";
+			
+				$DOC	= mb_ereg_replace( "[\r\n]+\t+", "\r", $DOC );
+				$DOC	= mb_ereg_replace( "[\r\n]+[\t *]+<", "\r<", $DOC );
+				
+				$DOC	= mb_ereg_replace( "//([\w]+)([\r\n]+)", "<span style='color:#11AAAA;'>//\\1</span>\\2", $DOC );
+				
+				$DOC	= mb_ereg_replace(
+							"([\r\n]+[\t *]+)(@{1}[\w]+)",
+							"\\1<span style='color:#090; font-weight:bold;'>\\2</span>",
+							$DOC
+						);
+				
+				$_DOC	= "";
+				foreach( split( "[\n\r]{1,2}", $DOC ) as $str )
+				{
+					$str = mb_ereg_replace( "^([\t ]*)/?\*+/?", "\\1", $str );
+					$str = mb_ereg_replace( "^ +", "", $str );
+					$str = mb_ereg_replace( "\[([\w\W]+)\]", "[<i>\\1</i>]", $str );
+					$str = mb_ereg_replace( "\[([\w\W]+)", "[<i>\\1", $str );
+					$_DOC .= mb_ereg_replace( "(\S)([\w\W]+)\]", "\\1\\2</i>]", $str ) . PHP_EOL;
+				}
+				$DOC	= $_DOC;
+		
+				$DOC	= str_replace( "<pre>", "<pre style='display:block;color:red;margin: 0 0 -15 0'>", $DOC );
+				$DOC	= str_replace( "<code>", "<code style='color:red;'>", $DOC );
+				$DOC	.= "<hr size=4 noshade>\r";
 				return $DOC;
 			}
 		}
