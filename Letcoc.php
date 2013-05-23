@@ -156,13 +156,13 @@ class Letcoc {
 
 
 /**
- * L_Controller Letcoc Class.
+ * L_Controller extends Letcoc Class.
  * 
  * PHP Version 5.3.9
  * 
- * @name		Letcoc Controller Class
- * @package		CodeIgniter
- * @author		Aleksei Zhulitov
+ * @name		Letcoc Controller Class.
+ * @package		CodeIgniter.
+ * @author		Aleksei Zhulitov.
  * @title		Класс расширения Letcoc, для Контроллеров CodeIgniter.
  */
 class L_Controller extends Letcoc{
@@ -251,13 +251,13 @@ class L_Controller extends Letcoc{
 
 
 /**
- * L_DataBase Letcoc Class.
+ * L_DataBase extends Letcoc Class.
  * 
  * PHP Version 5.3.9
  * 
- * @name		Letcoc DataBase Class
- * @package		CodeIgniter
- * @author		Aleksei Zhulitov
+ * @name		Letcoc DataBase Class.
+ * @package		CodeIgniter.
+ * @author		Aleksei Zhulitov.
  * @title		Класс расширения Letcoc, для Базы Данных CodeIgniter.
  */
 class L_DataBase extends Letcoc {
@@ -426,13 +426,13 @@ class L_DataBase extends Letcoc {
 
 
 /**
- * L_Spider_silk Letcoc Class.
+ * L_Spider_silk extends Letcoc Class.
  * 
  * PHP Version 5.3.9
  * 
- * @name		Spider_silk Class
- * @package		CodeIgniter
- * @author		Aleksei Zhulitov
+ * @name		Spider_silk Class.
+ * @package		CodeIgniter.
+ * @author		Aleksei Zhulitov.
  * @title		Класс позволяющий загружать прочие контроллеры CodeIgniter и вызывать их методы.
  *
  */
@@ -454,5 +454,117 @@ class L_Spider_silk extends Letcoc{
 }
 
 
+
+
+/**
+ * _P extends Letcoc Class.
+ * 
+ * PHP Version 5.3.9
+ * 
+ * @name		_P Class
+ * @package		CodeIgniter
+ * @author		Aleksei Zhulitov
+ * @title		Набор плюшек для разработчика кода.
+ */
+class _P extends Letcoc {
+	
+	/**
+	 * Метод выводящий результат Функции `print_r` обрамленный в <pre>.
+	 * 
+	 * @access	public
+	 * @param	any		$var	[переменная информация о которой будет выведена]
+	 * @param	bool	$var	[TRUE  - тэг `pre` будет позиционирован абсолютно]
+	 * @return	void
+	 */
+	public static function P( $var = "", $onTop = FALSE )
+	{
+		$onTop	= ( $onTop ) ? "position:absolute;z-index:999999;" : "";
+		echo "<pre style='{$onTop}border:1px dotted red;padding:10px; background:#FFC; color:#000;'>";
+		print_r( $var );
+		echo "</pre>";
+	}
+	
+	
+	/**
+	 * Метод выводящий список методов переданного аргументом класса.
+	 * 
+	 * @access	public
+	 * @param	object	$class	[класс, методы которого нужно вывести.]
+	 * @return	void
+	 */
+	public static function CM ( $class = "" )
+	{
+		if( !is_object( $class ) ) return;
+		self::P( get_class_methods( $class ) );
+	}
+	
+	
+	/**
+	 * Метод выводящий список параметров
+	 * переданного аргументом класса или объекта.
+	 * 
+	 * @access	public
+	 * @param	object	$class	[класс, параметры которого нужно вывести.]
+	 * @return	void
+	 */
+	public static function CV ( $class = "" )
+	{
+		if( !is_object( $class ) ) return;
+		self::P( get_object_vars( $class ) );
+	}
+	
+	
+	/**
+	 * Метод выводящий список параметров
+	 * переданного аргументом класса или объекта.
+	 * 
+	 * Выводит информацию только о тех параметрах,
+	 * значения которых не являются другими классами.
+	 * 
+	 * @access	public
+	 * @param	object	$class	[класс, параметры которого нужно вывести.]
+	 * @return	void
+	 */
+	public static function COV( $class = "" )
+	{
+		if( !is_object( $class ) ) return;
+			
+		$BUFF				=	new stdClass;
+		foreach( $class as $name => $value )
+		{
+			if( is_object( $value ) and get_class( $value ) != "stdClass" )
+				continue;
+			$BUFF->$name	= $value;
+		}
+		self::P( $BUFF );
+	}
+	
+	
+	
+	/**
+	 * Метод выводит информацию о всех определенных ранееконстантах.
+	 * 
+	 * @access	public
+	 * @return	void
+	 */
+	public static function DC ()
+	{
+		self::P( get_defined_constants() );
+	}
+	
+	
+	/**
+	 * Метод выводит информацию о файлах которые ранее были подключены
+	 * через: include; include_once; require; require_once;
+	 * 
+	 * @access	public
+	 * @return	void
+	 */
+	public static function _IF ()
+	{
+		self::P( get_included_files() );
+	}
+	
+}
 /* End of file Letcoc.php */
 /* Location: ./application/controllers/Letcoc.php */
