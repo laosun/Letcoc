@@ -36,7 +36,7 @@ class Letcoc {
 	public function __construct()
 	{	
 		/** нет ошибкам */
-		error_reporting( 0 );
+		//error_reporting( 0 );
 		
 		$this->CI	= & get_instance();
 		$this->initialize();
@@ -457,7 +457,7 @@ class L_Spider_silk extends Letcoc{
 
 
 /**
- * _P extends Letcoc Class.
+ * _P Class.
  * 
  * PHP Version 5.3.9
  * 
@@ -465,28 +465,74 @@ class L_Spider_silk extends Letcoc{
  * @package		CodeIgniter
  * @author		Aleksei Zhulitov
  * @title		Набор плюшек для разработчика кода.
+ * 
+ * @todo	Для получения справки по классу, выполните:
+ * <pre>
+ * 	_P::DOC();
+ * </pre>
+ * 
+ * @example	[Образец класса для запуска примеров]
+ * <pre>
+ *	class some{
+ *		public $param	 = array();
+ *		public $param_ll = "someValue";
+ 
+ *		/**
+ *		 * Some Method test
+ *		 * ...
+ *		 * /
+ *		function test(){}
+ *
+ *		function test_ll(){}
+ *	}
+ *	$class = new some;
+ * </pre>
  */
-class _P extends Letcoc {
+class _P {
 	
 	/**
-	 * Метод выводящий результат Функции `print_r` обрамленный в <pre>.
+	 * Метод выводящий результат Функции `print_r` обрамленный в `pre`.
+	 * 
+	 * @example
+	 * <pre>
+	 * 	_P::P( $you_variable );
+	 * </pre>
 	 * 
 	 * @access	public
 	 * @param	any		$var	[переменная информация о которой будет выведена]
-	 * @param	bool	$var	[TRUE  - тэг `pre` будет позиционирован абсолютно]
+	 * @param	string|bool	$title
+	 * 					[string - Заголовок выходящий в начале контейнера с инфой;
+	 * 					 bool - `FALSE` не выводить заголовок ]
+	 * 
+	 * @param	bool		$var	[TRUE  - тэг `pre` будет позиционирован абсолютно]
+	 * @param	bool		$return	[TRUE  - вернет без `pre`; FALSE - выведет в браузер ]
 	 * @return	void
 	 */
-	public static function P( $var = "", $onTop = FALSE )
+	public static function P( $var = "", $title = "Информация", $onTop = FALSE, $return = FALSE )
 	{
 		$onTop	= ( $onTop ) ? "position:absolute;z-index:999999;" : "";
-		echo "<pre style='{$onTop}border:1px dotted red;padding:10px; background:#FFC; color:#000;'>";
-		print_r( $var );
-		echo "</pre>";
+		if( !$return )
+			echo "<pre style='{$onTop}border:1px dotted red;padding:10px; background:#FFC; color:#000;'>";
+			
+		$buffer	 = "";
+		if ( !is_bool( $title ) and $title !== FALSE )
+			$buffer	.= print_r( "<h4 style='color:blue;'> :: {$title} :: </h4>", $return );
+		$buffer	.= print_r( $var, $return );
+		
+		if( !$return )
+			echo "</pre>";
+		
+		if( $return ) return $buffer;
 	}
 	
 	
 	/**
 	 * Метод выводящий список методов переданного аргументом класса.
+	 * 
+	 * @example
+	 * <pre>
+	 * 	_P::CM( $class );
+	 * </pre>
 	 * 
 	 * @access	public
 	 * @param	object	$class	[класс, методы которого нужно вывести.]
@@ -495,13 +541,21 @@ class _P extends Letcoc {
 	public static function CM ( $class = "" )
 	{
 		if( !is_object( $class ) ) return;
-		self::P( get_class_methods( $class ) );
+		self::P(
+			get_class_methods( $class ),
+			"Методы класса - " . get_class( $class )
+		);
 	}
 	
 	
 	/**
 	 * Метод выводящий список параметров
 	 * переданного аргументом класса или объекта.
+	 * 
+	 * @example
+	 * <pre>
+	 * 	_P::CV( $class );
+	 * </pre>
 	 * 
 	 * @access	public
 	 * @param	object	$class	[класс, параметры которого нужно вывести.]
@@ -510,7 +564,10 @@ class _P extends Letcoc {
 	public static function CV ( $class = "" )
 	{
 		if( !is_object( $class ) ) return;
-		self::P( get_object_vars( $class ) );
+		self::P(
+			get_object_vars( $class ), 
+			"Параметры класса - " . get_class( $class )
+		);
 	}
 	
 	
@@ -520,7 +577,12 @@ class _P extends Letcoc {
 	 * 
 	 * Выводит информацию только о тех параметрах,
 	 * значения которых не являются другими классами.
-	 * 
+	 *
+	 * @example
+	 * <pre>
+	 * 	_P::COV( $class );
+	 * </pre>
+	 *
 	 * @access	public
 	 * @param	object	$class	[класс, параметры которого нужно вывести.]
 	 * @return	void
@@ -536,20 +598,31 @@ class _P extends Letcoc {
 				continue;
 			$BUFF->$name	= $value;
 		}
-		self::P( $BUFF );
+		self::P(
+			$BUFF,
+			"Методы класса - " . get_class( $class )
+		);
 	}
 	
 	
 	
 	/**
-	 * Метод выводит информацию о всех определенных ранееконстантах.
+	 * Метод выводит информацию о всех определенных ранее константах.
+	 * 
+	 * @example
+	 * <pre>
+	 * 	_P::DC();
+	 * </pre>
 	 * 
 	 * @access	public
 	 * @return	void
 	 */
 	public static function DC ()
 	{
-		self::P( get_defined_constants() );
+		self::P(
+			get_defined_constants(),
+			"Информация о константах"
+		);
 	}
 	
 	
@@ -557,14 +630,100 @@ class _P extends Letcoc {
 	 * Метод выводит информацию о файлах которые ранее были подключены
 	 * через: include; include_once; require; require_once;
 	 * 
+	 * @example
+	 * <pre>
+	 * 	_P::_IF();
+	 * </pre>
+	 * 
 	 * @access	public
 	 * @return	void
 	 */
 	public static function _IF ()
 	{
-		self::P( get_included_files() );
+		self::P(
+			get_included_files(),
+			"Информация о подключеных файлах"
+		);
 	}
 	
+	
+	
+	/**
+	 * Метод выводит документацию по указанному классу.
+	 * 
+	 * @example_1 [Пример использования]
+	 *	<pre>
+	 *		class some{
+	 *			/**
+	 *			 * Some Method
+	 *			 * ...
+	 *			 * /
+	 *			function test(){}
+	 *		}	
+	 *		$class	= new some;
+	 *		_P::DOC( $class );
+	 *	</pre>
+	 * 
+	 * @access	public
+	 * @param	object	$class	[object - класс по которому нужно вывести инфу; NULL - выводит информацию о классе `плюшек`]
+	 * @return	void
+	 */
+	public static function DOC( $class = NULL )
+	{
+		if ( is_null( $class ) or !is_object( $class ) or get_class( $class ) == "stdClass" )
+		{
+			$class	= new _P;
+		}
+		
+		if ( !function_exists(	"_Parse_DOC" ) )
+		{
+			function _Parse_DOC ( $DOC ) {
+				if ( strlen( $DOC ) < 10 )
+					return "/**\r * Документация отсутствует ):\r */";
+			
+				$DOC	=	mb_ereg_replace(
+								"[\r\n]+\t+",
+								"\r",
+								$DOC
+							);
+
+				$DOC	=	mb_ereg_replace(
+								"[\r\n]+[\t *]+<",
+								"\r<",
+								$DOC
+							);
+							
+				$DOC	= str_replace(
+								"<pre>",
+								"<pre style='display:block;color:red;margin: 0 0 -15 0'>",
+								$DOC
+							);
+				$DOC	.= "<hr>\r";
+				return $DOC;
+			}
+		}
+		
+		$RETURN	= "";
+		
+		$_Reflection		= new ReflectionClass( $class );
+		
+		$DocComment			= _Parse_DOC ( $_Reflection->getDocComment() );
+
+		
+		$RETURN	.= _P::P( $DocComment, "Информация о class " . get_class( $class ) . "{}", FALSE, TRUE );
+		
+		foreach ( $_Reflection->getMethods() as $method )
+		{
+			$DocComment	=	_Parse_DOC( $_Reflection->getMethod( $method->name )->getDocComment() );
+			$RETURN	.= _P::P(
+							$DocComment,
+							"Информация о методе `{$method->name}` класса `{$method->class}`",
+							FALSE, TRUE
+						) ;
+		}
+		
+		_P::P( $RETURN, FALSE );
+	}
 }
 /* End of file Letcoc.php */
 /* Location: ./application/controllers/Letcoc.php */
