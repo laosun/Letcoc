@@ -22,7 +22,7 @@ RUS. Библиотека расширяющая возможности CodeIgni
 
 ### SOME HELP
 
-**Установка:** Скопировать файл `Letcoc.php` в `./application/controllers/`
+**Установка:** Скопировать файл `Letcoc.php` и папку `Letcoc_extends` в `./application/controllers/`
 
 **Подключение в методе вашего контроллера:** `$this->load->library( "Letcoc", NULL, "Letcoc" );`
 
