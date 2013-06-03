@@ -18,13 +18,15 @@ class Letcoc {
 	 * @access private|protected|public
 	 */
 	/** CI Контроллер (супер объект по ссылке) */
-	public $CI				=	NULL;
+	public			$CI				=	NULL;
 	
 	/** Метод которым приходят данные от пользователя (_POST||_GET). */
-	private $_REQ_Method	= "_POST";
+	private			$_REQ_Method	= "_POST";
 	
 	/** Массив в котором хранятся данные поступившие методом заданным в `$_REQ_Method`. */
-	protected $__REQUEST	= array();
+	protected		$__REQUEST		= array();
+	
+	protected static $_instance		=	NULL;
 	/**#@-*/
 
 	/**
@@ -35,17 +37,22 @@ class Letcoc {
 	 */
 	public function __construct()
 	{	
-		/** нет ошибкам */
-		//error_reporting( 0 );
+		if ( get_called_class() == "Letcoc" )
+		{
+			self::$_instance	= & $this;
+			include_once( APPPATH . "libraries/Letcoc_extends/_P.php" );		
+		}
 		
-		$this->CI	= & get_instance();
+		$this->CI			= & get_instance();
 		$this->initialize();
 		
-		/** Плюшки грузим пачками. :) */
-		if ( get_class( $this ) == "Letcoc" )
+		if ( get_called_class() == "Letcoc" )
 		{
-			include_once( APPPATH . "libraries/Letcoc_extends/_P.php" );
+			$this->_instance	= & $this;
 		}
+		else
+			$this->_instance 	= & self::$_instance;
+		
 	}
 	
 	
@@ -68,16 +75,28 @@ class Letcoc {
 		}
 		
 		/**
-		 * Блок назначения параметров, для приема
+		 * Блок проверки доступности свойств контроллера.
+		 **/
+			$_check_REQ_Method	= _P::CP_access( $this->CI, "_REQ_Method" );
+			$_check___REQUEST	= _P::CP_access( $this->CI, "__REQUEST" );
+		
+			if ( $_check___REQUEST !== FALSE AND $_check___REQUEST !== "public" )
+				return;
+		
+			if ( $_check_REQ_Method !== FALSE AND $_check_REQ_Method !== "public" )
+				return;
+	
+		/**
+		 * Блок назначения параметров для приема
 		 * входящих данных и прием данных.
 		 */
-		if ( isset( $this->CI->_REQ_Method ) )
-			$this->_REQ_Method		= & $this->CI->_REQ_Method;
-		else
-			$this->CI->_REQ_Method	= & $this->_REQ_Method;
+			if ( isset( $this->CI->_REQ_Method ) )
+				$this->_REQ_Method		= & $this->CI->_REQ_Method;
+			else
+				$this->CI->_REQ_Method	= & $this->_REQ_Method;
 		
-		$this->__REQUEST			= & $GLOBALS[ $this->_REQ_Method ];
-		$this->CI->__REQUEST		= & $this->__REQUEST;
+			$this->__REQUEST			= & $GLOBALS[ $this->_REQ_Method ];
+			$this->CI->__REQUEST		= & $this->__REQUEST;
 	}
 	
 	
@@ -103,21 +122,19 @@ class Letcoc {
 	
 	
 	/** 
-	 * Метод для инициализации и получения класса Letcoc Контроллера.
+	 * Метод для инициализации и получения класса Letcoc контроллера.
 	 * 
 	 * @access	public
 	 * @return	object	[ссылка на класс L_Controller]
 	 */
 	public function Controller() {
-		if ( !isset( $this->Controller ) )
+		if ( !isset( $this->_instance->Controller ) )
 		{
 			include_once( APPPATH . "libraries/Letcoc_extends/L_Controller.php" );
-			$this->Controller = new L_Controller;
+			$this->_instance->Controller = new L_Controller;
 		}
-		return $this->Controller;
+		return $this->_instance->Controller;
 	}
-	
-	
 	
 	/** 
 	 * Метод для инициализации и получения класса Letcoc DB.
@@ -126,14 +143,31 @@ class Letcoc {
 	 * @return	object	[ссылка на класс L_DataBase]
 	 */
 	public function DB() {
-		if ( !isset( $this->DB ) )
+		
+		if ( !isset( $this->_instance->DB ) )
 		{
 			include_once( APPPATH . "libraries/Letcoc_extends/L_DataBase.php" );
-			$this->DB = new L_DataBase;
+			$this->_instance->DB = new L_DataBase;
 		}
-		return $this->DB;
+		return $this->_instance->DB;
 	}
 	
+	
+
+	/** 
+	 * Метод для инициализации и получения класса Letcoc DB.
+	 * 
+	 * @access	public
+	 * @return	object	[ссылка на класс L_DataBase]
+	 */
+	public function Lib() {
+		if ( !isset( $this->Lib ) )
+		{
+			include_once( APPPATH . "libraries/Letcoc_extends/L_Library.php" );
+			$this->Lib = new L_Library;
+		}
+		return $this->Lib;
+	}
 	
 	
 	/** 
