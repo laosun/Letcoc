@@ -121,6 +121,25 @@ class Letcoc {
 	
 	
 	
+	/**
+	 * Метод позволяет проверить а потом получить
+	 * переданное в __REQUEST значение.
+	 * 
+	 * @access	public
+	 * @param	string	$value	[Имя ключа в __REQUEST для получения]
+	 * @return	value||NULL		[value - значение; NULL - если ключа нет. ]
+	 */
+	public function get_REQ( $value = "" )
+	{
+		if ( isset( $this->__REQUEST) and isset( $this->__REQUEST[$value] ) )
+		{
+			return $this->__REQUEST[$value];
+		}
+		return NULL;
+	}
+	
+	
+	
 	/** 
 	 * Метод для инициализации и получения класса Letcoc контроллера.
 	 * 
@@ -155,18 +174,38 @@ class Letcoc {
 	
 
 	/** 
-	 * Метод для инициализации и получения класса Letcoc DB.
+	 * Метод для инициализации и получения класса Letcoc Lib.
+	 * 
+	 * Если указать в качестве первого аргумента ($library)
+	 * имя библиотеки расположенной в `./application/libraries/`,
+	 * загрузит ее если она там имеется.
+	 * 
+	 * Если указать второй аргумент ($isConfig) = TRUE,
+	 * попытается загрузить файл с конфигурацией располоденный в
+	 * `./application/config/` в загружаемую библиотеку.
+	 * !! Имя файла конфигурации должно совпадать с именем файла библиотеки.
 	 * 
 	 * @access	public
-	 * @return	object	[ссылка на класс L_DataBase]
+	 * @param	string	$library	[Имя библиотеки которую нужно подгрузить в СI контроллер]
+	 * @param	bool	$isConfig	[TRUE - подгрузить в библиотеку файл с конфигурацией; FALSE - нет;]
+	 * @return	object				[ссылка на класс L_Library]
 	 */
-	public function Lib() {
-		if ( !isset( $this->Lib ) )
+	public function Lib( $library = NULL, $isConfig = FALSE ) {
+		
+		$library	= ( strlen( (string) $library ) > 0 )	? $library  : NULL;
+		$isConfig	= ( is_bool( $isConfig ) )				? $isConfig : FALSE;
+		
+		if ( !isset( $this->_instance->Lib ) )
 		{
 			include_once( APPPATH . "libraries/Letcoc_extends/L_Library.php" );
-			$this->Lib = new L_Library;
+			$this->_instance->Lib = new L_Library( $library, $isConfig );
 		}
-		return $this->Lib;
+		else if ( isset( $this->_instance->Lib ) AND !is_null( $library ) )
+		{
+			$this->_instance->Lib->load( $library, $isConfig );
+		}
+
+		return $this->_instance->Lib;
 	}
 	
 	
