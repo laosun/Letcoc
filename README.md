@@ -1,16 +1,28 @@
-Letcoc
-======
+# Letcoc (PHP)
+**Library extends the capabilities controllers of CodeIgniter**
 
-(PHP) Library extends the capabilities of CodeIgniter.
+_(Библиотека расширяющая возможности контроллеров CodeIgniter)_.
 
-RUS. Библиотека расширяющая возможности CodeIgniter.
+##### [Документация](https://github.com/laosun/Letcoc/wiki "ВИКИ-МАНА")
+* * * * * *
 
-======
+### Установка
 
-##### Библиотека активно дописывается и переписывается!!!
-##### То, что вы брали вчера, сегодня уже может устареть!
+* Скопировать файл <u>Letcoc.php</u> и папку <u>Letcoc_extends</u> в <u>./application/controllers/</u>.
 
-======
+* * * * * *
+
+### Загрузка
+_Загрузку можно осуществлять в любом из методов текущего контроллера, но желательно это делать в конструкторе._
+```php
+public function __construct () {
+	parent::__construct();
+	$this->load->library( "Letcoc", NULL, "Letcoc" );
+}
+```
+> Дальнейшее обращение к библиотеке через `$this->Letcoc;`
+
+* * * * * *
 
 ### ИНФОРМАЦИЯ
 
@@ -19,14 +31,9 @@ RUS. Библиотека расширяющая возможности CodeIgni
   объектах, классах и подгружаемых файлах. По своей сути это набор методов,
   позволяющих минимизировать то, что мы делаем регулярно.
 
-
-### SOME HELP
-
-**Установка:** Скопировать файл `Letcoc.php` и папку `Letcoc_extends` в `./application/controllers/`
-
-**Подключение в методе вашего контроллера:** `$this->load->library( "Letcoc", NULL, "Letcoc" );`
-
 **Вызов справки по классу "_P":** `_P::DOC();`
+
+* * * * * *
 
 
 ### TODO
