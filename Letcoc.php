@@ -95,7 +95,7 @@ class Letcoc {
 			else
 				$this->CI->_REQ_Method	= & $this->_REQ_Method;
 		
-			$this->__REQUEST			= & $GLOBALS[ $this->_REQ_Method ];
+			$this->__REQUEST			=  $GLOBALS[ $this->_REQ_Method ];
 			$this->CI->__REQUEST		= & $this->__REQUEST;
 	}
 	
