@@ -218,6 +218,7 @@ class Letcoc {
 	 */
 	public function Load_other_controller ( $class_ = "" )
 	{
+		$class_ = ucfirst( strtolower( $class_ ) );
 		if ( !class_exists( "L_Spider_silk" ) )
 		{
 			include_once( APPPATH . "libraries/Letcoc_extends/L_Spider_silk.php" );
@@ -230,10 +231,11 @@ class Letcoc {
 		if ( strtolower( get_class( $this->CI ) ) == strtolower( $class_ ) )
 			return $FALSE;
 		
-		if ( !file_exists( APPPATH . "controllers/{$class_}.php" ) )
+		$class_file_name	= strtolower( $class_ );
+		if ( !file_exists( APPPATH . "controllers/{$class_file_name}.php" ) )
 			return $FALSE;
 	
-		include_once( APPPATH . "controllers/{$class_}.php" );
+		include_once( APPPATH . "controllers/{$class_file_name}.php" );
 		
 		if( class_exists( $class_ ) )
 		{
