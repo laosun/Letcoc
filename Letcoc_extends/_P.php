@@ -116,19 +116,20 @@ class _P {
 			$modifer	= $_ReflectionMethod->isPrivate()	? "private"		: $modifer;
 			$modifer	= $_ReflectionMethod->isProtected()	? "protected"	: $modifer;
 			$modifer	= $_ReflectionMethod->isStatic()	? "static"		: $modifer;
+			
+			if ( $modifer == "private" AND get_class($class) != $Method->class )
+				continue;
 
-			if ( !isset($BUFF->$modifer) )
-				$BUFF->$modifer	= array();
 			array_push($BUFF->$modifer, $Method->name );
 		}
 		sort($BUFF->static);
 		sort($BUFF->public);
 		sort($BUFF->protected);
 		sort($BUFF->private);
-		if( count(sort($BUFF->static)) < 1 )		unset($BUFF->static);
-		if( count(sort($BUFF->public)) < 1 )		unset($BUFF->public);
-		if( count(sort($BUFF->protected)) < 1 )		unset($BUFF->protected);
-		if( count(sort($BUFF->private)) < 1 )		unset($BUFF->private);
+		if( count($BUFF->static) < 1 )		unset($BUFF->static);
+		if( count($BUFF->public) < 1 )		unset($BUFF->public);
+		if( count($BUFF->protected) < 1 )	unset($BUFF->protected);
+		if( count($BUFF->private) < 1 )		unset($BUFF->private);
 		self::P(
 			$BUFF,
 			"Методы класса - " . get_class( $class )
@@ -138,7 +139,7 @@ class _P {
 	
 	
 	/**
-	 * Метод выводящий список свойства
+	 * Метод выводящий список свойств
 	 * переданного аргументом класса или объекта.
 	 * 
 	 * @example	<code>_P::CV( $class );</code>

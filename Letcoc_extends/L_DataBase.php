@@ -25,6 +25,9 @@ class L_DataBase extends Letcoc {
 	
 	/** Текущий SQL запрос. */
 	private	$_curSQL					= NULL;
+	
+	/** Не экранируемые ключи-константы. */
+	private $__constant					= array();
 	/**#@-*/
 	
 	/**
@@ -58,16 +61,17 @@ class L_DataBase extends Letcoc {
 	 */
 	public function SQL( $name = FALSE, $array = FALSE )
 	{
-		$this->_curSQL	= NULL;
+		$this->_curSQL		= NULL;
 		if ( !is_string( $name ) )
 			return $this;
 			
-		$SQL	= $this->_fill_SQL( $array );
+		$SQL				= $this->_fill_SQL( $array );
 		
 		if ( !isset( $SQL[$name] ) )
 			return $this;
 		
-		$this->_curSQL	= $SQL[ $name ];
+		$this->_curSQL		= $SQL[ $name ];
+		$this->__constant	= array();
 		return	$this;
 	}
 	
@@ -121,6 +125,25 @@ class L_DataBase extends Letcoc {
 	}
 	
 	
+	/**
+	 * Метод добавляет не экранируемую ключь-константу.
+	 * (Константы используется при дополнении SQL запроса, но не экранируются так же как и константа __pref__)
+	 * 
+	 * Список заданных констант очищается после использования метода SQL.
+	 * 
+	 * @important	Рекомендуется использовать следующие имена ключь-констант `__***__`: __name__, __sample__, ...
+	 * 
+	 * @access	public
+	 * @param	string	$key	[Имя ключь-константы]
+	 * @param	string	$value	[значение ключь-константы]
+	 * @return	object			[ссылка на этот класс]
+	 */
+	public function addConstant	( $key = FALSE, $value = FALSE ) {
+		if ( is_string( $key ) AND is_string( $value ) )
+			$this->__constant[$key]	= $value;
+		return $this;
+	}
+	
 	
 	/** 
 	 * Метод парсит каждый элемент в массиве свойства класса $this->SQL
@@ -151,6 +174,8 @@ class L_DataBase extends Letcoc {
 		$__REQUEST			= array(
 			"__pref__"		=> $this->_MySQL->dbprefix
 		);
+		$__REQUEST			= array_merge( $__REQUEST, (array)$this->__constant );
+		
 		
 		if ( $merge === TRUE AND is_array( $array ) )
 		{

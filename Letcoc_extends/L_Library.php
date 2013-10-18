@@ -67,7 +67,7 @@ class L_Library extends Letcoc {
 		
 		if ( !isset( $this->CI->$library ) )
 		{
-			$this->CI->load->library( $library );
+			$this->CI->load->library( $library, array() );
 		}
 		
 		if ( isset( $this->CI->$library ) )
