@@ -103,10 +103,11 @@ class L_DataBase extends Letcoc {
 	 * 
 	 * @access	public
 	 * @param	string|void	$SQL	[string - строка SQL запроса; void - ничего]
+	 * @param	bool		$parse	[true - заменить константы в переданном первым аргументом запросе]
 	 * @return	object				[класс CodeIgniter для работы с DB]
 	 * @return	object				[L_DataBase_FIX - если нет SQL запроса и нет запроса в памяти.]
 	 */
-	public function query( $SQL = NULL )
+	public function query( $SQL = NULL, $parse = FALSE )
 	{
 		if ( !is_string( $SQL ) or strlen( $SQL ) < 5 )
 		{
@@ -121,6 +122,16 @@ class L_DataBase extends Letcoc {
 				$SQL	= $this->_curSQL;
 			}
 		}
+		
+		if ( $parse === TRUE ) {
+			$__REQUEST		= array(
+				"__pref__"	=> $this->_MySQL->dbprefix
+			);
+			$__REQUEST		= array_merge( $__REQUEST, (array)$this->__constant );
+			$SQL			= $this->_PARSER->parse_string( (string)$SQL, $__REQUEST, TRUE );
+			$SQL			= preg_replace( "/\{\/?(\w*?)\}/", "''", $SQL );
+		}
+		
 		return $this->_MySQL->query( $SQL );
 	}
 	
