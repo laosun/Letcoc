@@ -36,12 +36,11 @@ class L_DataBase extends Letcoc {
 	 * @access	public
 	 * @return	void
 	 */
-	public function __construct()
+	public function __construct($config = NULL)
 	{
 		parent::__construct();
-
 		/** Подгружаем DB.  */
-		$this->CI->load->database();
+		$this->CI->load->database( (is_string($config) ? $config : '') );
 		$this->_MySQL		=& $this->CI->db;
 		
 		/** Подгружаем Парсер. */
