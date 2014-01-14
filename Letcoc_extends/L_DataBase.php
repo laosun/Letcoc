@@ -17,12 +17,6 @@ class L_DataBase extends Letcoc {
 	 * @access private|protected|public
 	 */
 	
-	/** Свойство для хранения CI DB */
-	private $_MySQL						= NULL;
-	
-	/** Свойство для хранения CI parser */
-	private $_PARSER					= NULL;
-	
 	/** Текущий SQL запрос. */
 	private	$_curSQL					= NULL;
 	
@@ -36,16 +30,15 @@ class L_DataBase extends Letcoc {
 	 * @access	public
 	 * @return	void
 	 */
-	public function __construct($config = NULL)
+	public function __construct()
 	{
 		parent::__construct();
+
 		/** Подгружаем DB.  */
-		$this->CI->load->database( (is_string($config) ? $config : '') );
-		$this->_MySQL		=& $this->CI->db;
+		$this->CI->load->database();
 		
 		/** Подгружаем Парсер. */
 		$this->CI->load->library( "parser" );
-		$this->_PARSER		=& $this->CI->parser;
 	}
 	
 	
@@ -54,22 +47,32 @@ class L_DataBase extends Letcoc {
 	 * (наполнение может происходить из __REQUEST или из переданного массива `$array` )
 	 * 
 	 * @access	public
-	 * @param	string	$name	[имя SQL запроса]
-	 * @param	array	$array	[массив для наполнения (опционально)]
-	 * @return	object			[ссылка на этот класс]
+	 * @param	string	$SQL_or_name	[имя SQL запроса или SQL запрос]
+	 * @param	array	$array			[массив для наполнения (опционально)]
+	 * @return	object					[ссылка на этот класс]
 	 */
-	public function SQL( $name = FALSE, $array = FALSE )
+	public function SQL( $SQL_or_name = FALSE, $array = FALSE )
 	{
 		$this->_curSQL		= NULL;
-		if ( !is_string( $name ) )
-			return $this;
-			
-		$SQL				= $this->_fill_SQL( $array );
-		
-		if ( !isset( $SQL[$name] ) )
+		if ( !is_string( $SQL_or_name ) )
 			return $this;
 		
-		$this->_curSQL		= $SQL[ $name ];
+		if( !isset( $this->SQL ) or !is_array( $this->SQL ) )
+		{
+			if ( isset( $this->CI->SQL ) AND is_array( $this->CI->SQL )	AND _P::CP_access( $this->CI, "SQL", "public" )	)
+				$this->SQL	= & $this->CI->SQL;
+			else
+				$this->SQL	= array();
+		}
+		
+		if ( isset( $this->SQL[$SQL_or_name] ) AND is_string($this->SQL[$SQL_or_name]) )
+			$SQL			= $this->SQL[$SQL_or_name];
+		elseif ( strlen($SQL_or_name) > 10 )
+			$SQL			= $SQL_or_name;
+		else
+			return $this;
+		
+		$this->_curSQL			= $this->_fill_SQL( $SQL, $array );
 		$this->__constant	= array();
 		return	$this;
 	}
@@ -124,14 +127,14 @@ class L_DataBase extends Letcoc {
 		
 		if ( $parse === TRUE ) {
 			$__REQUEST		= array(
-				"__pref__"	=> $this->_MySQL->dbprefix
+				"__pref__"	=> $this->CI->db->dbprefix
 			);
 			$__REQUEST		= array_merge( $__REQUEST, (array)$this->__constant );
-			$SQL			= $this->_PARSER->parse_string( (string)$SQL, $__REQUEST, TRUE );
+			$SQL			= $this->CI->parser->parse_string( (string)$SQL, $__REQUEST, TRUE );
 			$SQL			= preg_replace( "/\{\/?(\w*?)\}/", "''", $SQL );
 		}
 		
-		return $this->_MySQL->query( $SQL );
+		return $this->CI->db->query( $SQL );
 	}
 	
 	
@@ -156,7 +159,7 @@ class L_DataBase extends Letcoc {
 	
 	
 	/** 
-	 * Метод парсит каждый элемент в массиве свойства класса $this->SQL
+	 * Метод парсит переданных SQL запрос
 	 * и подставляет значения из $this->__REQUEST или из переданного массива;
 	 * 
 	 * @access	private
@@ -164,57 +167,34 @@ class L_DataBase extends Letcoc {
 	 * @param	bool	$merge	[true = слить 2 массива (array и __REQUEST) ]
 	 * @return	array
 	 */
-	private function _fill_SQL( $array = FALSE, $merge	= FALSE )
+	private function _fill_SQL( $SQL = "", $array = FALSE, $merge	= FALSE )
 	{
 		$array	= (is_object($array)) ? (array)$array : $array;
-		if( !isset( $this->SQL ) or !is_array( $this->SQL ) )
-		{
-			if (
-				isset( $this->CI->SQL )
-				AND is_array( $this->CI->SQL )
-				AND _P::CP_access( $this->CI, "SQL", "public" )
-			){
-				$this->SQL	= & $this->CI->SQL;
-			}
-			else	return array();
-			
-		}
 		
-		$SQL				= array();
-		$__REQUEST			= array(
-			"__pref__"		=> $this->_MySQL->dbprefix
+		$__REQUEST					= array_merge(
+			array(
+				"__pref__"		=> $this->CI->db->dbprefix
+			),
+			(array)$this->__constant
 		);
-		$__REQUEST			= array_merge( $__REQUEST, (array)$this->__constant );
-		
 		
 		if ( $merge === TRUE AND is_array( $array ) )
-		{
-			$array			= array_merge( $array, $this->__REQUEST );
-		}
+			$array					= array_merge( $array, $this->__REQUEST );
 		else
-		{
-			$array				= is_array( $array )	? $array : $this->__REQUEST;
-		}
+			$array					= is_array( $array )	? $array : $this->__REQUEST;
+		
 		
 		/* Экранируем ввод. */
-		foreach ( $array as $KEY => $VALUE )
-		{
+		foreach ( $array as $KEY => $VALUE ) {
 			if ( is_string( $VALUE ) or is_int( $VALUE ) or is_bool( $VALUE) )
-			{
-				$__REQUEST[ $KEY ]	= $this->_MySQL->escape( $VALUE );
-			}
+				$__REQUEST[ $KEY ]	= $this->CI->db->escape( $VALUE );
 			else
-			{
-				$__REQUEST[ $KEY ]	= $this->_MySQL->escape( (string)-1 );
-			}
+				$__REQUEST[ $KEY ]	= $this->CI->db->escape( (string)-1 );
 		}
 		
-		foreach( $this->SQL as $KEY => $VALUE )
-		{
-			$SQL[ $KEY ]	= $this->_PARSER->parse_string( (string)$VALUE, $__REQUEST, TRUE );
-			$SQL[ $KEY ]	= preg_replace( "/\{\/?(\w*?)\}/", "''", $SQL[ $KEY ] );
-		}
-		return (array)$SQL;
+
+		$SQL						= $this->CI->parser->parse_string( $SQL, $__REQUEST, TRUE );
+		return preg_replace( "/\{\/?(\w*?)\}/", "''", $SQL );
 	}
 }
 
