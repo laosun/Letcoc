@@ -67,6 +67,16 @@ class _P {
 	
 	
 	/**
+	 * Метод аналогичный _P::P, только по завершению выполняет выход (exit();)
+	 **/
+	public static function E( $var = "", $title = "Информация", $onTop = FALSE, $return = FALSE )
+	{
+		self::P( $var, $title, $onTop, $return );
+		exit();
+	}
+	
+	
+	/**
 	 * Метод выводящий результат Функции `print_r` в указанный файл.
 	 * 
 	 * @example	<code>_P::toFile( $you_variable, "path/file.name" );</code>

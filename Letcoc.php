@@ -161,12 +161,12 @@ class Letcoc {
 	 * @access	public
 	 * @return	object	[ссылка на класс L_DataBase]
 	 */
-	public function DB( $config = NULL ) {
+	public function DB() {
 		
 		if ( !isset( $this->_instance->DB ) )
 		{
 			include_once( APPPATH . "libraries/Letcoc_extends/L_DataBase.php" );
-			$this->_instance->DB = new L_DataBase($config);
+			$this->_instance->DB = new L_DataBase;
 		}
 		return $this->_instance->DB;
 	}
