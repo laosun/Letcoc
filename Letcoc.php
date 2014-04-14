@@ -127,15 +127,16 @@ class Letcoc {
 	 * 
 	 * @access	public
 	 * @param	string	$value	[Имя ключа в __REQUEST для получения]
+	 * @param	string	$deff	[Значение возвращаемое в случае отсутствия аргуманта]
 	 * @return	value||NULL		[value - значение; NULL - если ключа нет. ]
 	 */
-	public function get_REQ( $value = "" )
+	public function get_REQ( $value = "", $deff = NULL )
 	{
 		if ( isset( $this->__REQUEST) and isset( $this->__REQUEST[$value] ) )
 		{
 			return $this->__REQUEST[$value];
 		}
-		return NULL;
+		return $deff;
 	}
 	
 	
