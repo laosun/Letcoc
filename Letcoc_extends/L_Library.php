@@ -62,8 +62,9 @@ class L_Library extends Letcoc {
 		if( $library === NULL )
 			return $this;
 		
-		if( !file_exists( APPPATH . "libraries/{$library}.php" ) )
+		if( !file_exists( APPPATH . "libraries/{$library}.php" ) AND !file_exists( BASEPATH . "libraries/{$library}.php" ) ) {
 			return $this;
+		}
 		
 		if ( !isset( $this->CI->$library ) )
 		{
@@ -183,4 +184,4 @@ class L_Library extends Letcoc {
 	
 }
 /* End of file L_Library.php */
-/* Location: ./application/libraries/Letcoc_extends/L_Library.php */
+/* Location: ./system/libraries/Letcoc_extends/L_Library.php */

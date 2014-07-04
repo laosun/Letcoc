@@ -8,7 +8,7 @@
  * @package		Letcoc.
  * @title		Библиотека расширяющая возможности CodeIgniter.
  * @author		Aleksei Zhulitov (LaoSun).
- * @version		0.1 (alpha)
+ * @version		0.2 (system)
  * @link		http://github.com/laosun/Letcoc
  */
 class Letcoc {
@@ -40,7 +40,7 @@ class Letcoc {
 		if ( get_called_class() == "Letcoc" )
 		{
 			self::$_instance	= & $this;
-			include_once( APPPATH . "libraries/Letcoc_extends/_P.php" );		
+			include_once( BASEPATH . "libraries/Letcoc_extends/_P.php" );		
 		}
 		
 		$this->CI			= & get_instance();
@@ -150,7 +150,7 @@ class Letcoc {
 	public function Controller() {
 		if ( !isset( $this->_instance->Controller ) )
 		{
-			include_once( APPPATH . "libraries/Letcoc_extends/L_Controller.php" );
+			include_once( BASEPATH . "libraries/Letcoc_extends/L_Controller.php" );
 			$this->_instance->Controller = new L_Controller;
 		}
 		return $this->_instance->Controller;
@@ -162,12 +162,12 @@ class Letcoc {
 	 * @access	public
 	 * @return	object	[ссылка на класс L_DataBase]
 	 */
-	public function DB() {
+	public function DB( $config = NULL ) {
 		
 		if ( !isset( $this->_instance->DB ) )
 		{
-			include_once( APPPATH . "libraries/Letcoc_extends/L_DataBase.php" );
-			$this->_instance->DB = new L_DataBase;
+			include_once( BASEPATH . "libraries/Letcoc_extends/L_DataBase.php" );
+			$this->_instance->DB = new L_DataBase($config);
 		}
 		return $this->_instance->DB;
 	}
@@ -198,7 +198,7 @@ class Letcoc {
 		
 		if ( !isset( $this->_instance->Lib ) )
 		{
-			include_once( APPPATH . "libraries/Letcoc_extends/L_Library.php" );
+			include_once( BASEPATH . "libraries/Letcoc_extends/L_Library.php" );
 			$this->_instance->Lib = new L_Library( $library, $isConfig );
 		}
 		else if ( isset( $this->_instance->Lib ) AND !is_null( $library ) )
@@ -222,7 +222,7 @@ class Letcoc {
 		$class_ = ucfirst( strtolower( $class_ ) );
 		if ( !class_exists( "L_Spider_silk" ) )
 		{
-			include_once( APPPATH . "libraries/Letcoc_extends/L_Spider_silk.php" );
+			include_once( BASEPATH . "libraries/Letcoc_extends/L_Spider_silk.php" );
 		}
 		
 		$FALSE	= new L_Spider_silk();
@@ -251,4 +251,4 @@ class Letcoc {
 }
 
 /* End of file Letcoc.php */
-/* Location: ./application/libraries/Letcoc.php */
+/* Location: ./system/libraries/Letcoc.php */

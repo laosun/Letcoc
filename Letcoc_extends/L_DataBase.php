@@ -30,12 +30,12 @@ class L_DataBase extends Letcoc {
 	 * @access	public
 	 * @return	void
 	 */
-	public function __construct()
+	public function __construct($config = NULL)
 	{
 		parent::__construct();
 
 		/** Подгружаем DB.  */
-		$this->CI->load->database();
+		$this->CI->load->database( (is_string($config) ? $config : "") );
 		
 		/** Подгружаем Парсер. */
 		$this->CI->load->library( "parser" );
@@ -248,4 +248,4 @@ class L_DataBase_FIX{
 	}
 };
 /* End of file L_DataBase.php */
-/* Location: ./application/libraries/Letcoc_extends/L_DataBase.php */
+/* Location: ./system/libraries/Letcoc_extends/L_DataBase.php */

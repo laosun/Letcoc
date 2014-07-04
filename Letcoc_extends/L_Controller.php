@@ -12,11 +12,20 @@
  */
 class L_Controller extends Letcoc{
 	
+	/**
+	 * КОНСТРУКТОР.
+	 *
+	 * @access	public
+	 * @return	void
+	 */
 	public function __construct(){parent::__construct();}
 
 	/**
 	 * МАРШРУТИЗАТОР.
+	 * Осуществляет ремаппинг в требуемый метод активного класса контроллера.
 	 *
+	 * @todo	[Если требуемый метод в классе контроллере отсутствует или не является <code>public</code>, вызов будет перенаправлен в метод <code>	public function index(){...}</code>]
+	 * 
 	 * @access	public
 	 * @param	string	$method
 	 * @return	object	[this - L_Controller class]
@@ -114,4 +123,4 @@ class L_Controller extends Letcoc{
 }
 
 /* End of file L_Controller.php */
-/* Location: ./application/libraries/Letcoc_extends/L_Controller.php */
+/* Location: ./system/libraries/Letcoc_extends/L_Controller.php */
