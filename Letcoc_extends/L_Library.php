@@ -73,8 +73,12 @@ class L_Library extends Letcoc {
 		
 		if ( isset( $this->CI->$library ) )
 		{
-			$this->CI->$library->CI		= &get_instance();
-			$this->CI->$library->Letcoc	= &$this->CI->Letcoc;
+			if ( !method_exists( $this->CI->$library, "CI" ) ) {
+				$this->CI->$library->CI		= &get_instance();
+			}
+			if ( !method_exists( $this->CI->$library, "Letcoc" ) ) {
+				$this->CI->$library->Letcoc	= &$this->CI->Letcoc;
+			}
 		}
 		
 		if ( isset( $this->CI->$library ) AND $isConfig ===  TRUE )
