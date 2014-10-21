@@ -17,6 +17,7 @@ class L_Spider_silk extends Letcoc{
 	{
 		$this->_class	= $class;
 	}
+	
 	public function __call ( $method, $arguments )
 	{
 		if( method_exists( $this->_class, $method ) )
@@ -24,6 +25,17 @@ class L_Spider_silk extends Letcoc{
 			return call_user_func_array( array( $this->_class, $method ), $arguments );
 		}
 		return $this;
+	}
+	
+	public function __get( $name ) {
+		if		( isset( $this->_class->$name ) )
+			return $name = & $this->_class->$name;
+		
+		$CI	= & get_instance();
+		if	( isset( $CI->$name ) )
+			return $name = & $CI->$name;
+		
+		_exception_handler( E_ERROR, "No such properties '{$name}' in Classes `".get_class($this->_class)."` or `Controller`", "Load_other_controller", 0 );
 	}
 }
 
