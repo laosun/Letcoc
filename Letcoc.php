@@ -246,6 +246,9 @@ class Letcoc {
 		{	
 			$_class	= new stdClass;
 		}
+		
+		$this->CI->load->Loaded_controller	= & $_class;
+		
 		return new L_Spider_silk( $_class );
 	}
 }
